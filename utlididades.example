@@ -1,0 +1,178 @@
+<template>
+  <AppLayout title="Listado de Publicaciones">
+    <!-- Encabezado -->
+    <template #header>
+      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        Listado de Publicaciones
+        <Link :href="route('publicar.create')" class="float-right">
+        <jet-button>Nuevo</jet-button>
+        </Link>
+      </h2>
+    </template>
+    <div class="py-12">
+      <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+          <!-- Buscador-->
+          <div class="flex flex-col">
+            <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+              <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th scope="col"
+                          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Código
+                        </th>
+                        <th scope="col"
+                          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Producto
+                        </th>
+                        <th scope="col"
+                          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Precio
+                        </th>
+                        <th scope="col"
+                          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Cantidad
+                        </th>
+                        <th scope="col"
+                          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Detalles
+                        </th>
+                        <th scope="col"
+                          class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Acciones
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <template v-if="publicars.length === 0">
+                        <tr>
+                          <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
+                            NO HAY DATOS DE PRODUCTOS PARA MOSTRAR
+                          </td>
+                        </tr>
+                      </template>
+                      <template v-else>
+                        <tr v-for="publicar in publicars" :key="publicar.id">
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ publicar.id }}
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ publicar.id_producto }}
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ publicar.precio }}
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ publicar.cantidad }}
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ publicar.detalles }}
+                          </td>
+
+
+                          <td class="px-14 py-4 whitespace-nowrap text-center text-sm font-medium">
+                            <Link :href="route('publicar.edit', publicar.id)"
+                              class="ml-2 bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
+                            Editar
+                            </Link>
+                            <Link @click="eliminarPublicar(publicar)"
+                              class="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                            Eliminar
+                            </Link>
+                          </td>
+                        </tr>
+                      </template>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Seccion 2-->
+    <div class="py-4">
+      <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+          <main class="container mx-auto mt-8">
+            <div class="flex overflow-x-auto">
+              <div class="flex-shrink-0 card p-4 w-64" v-for="publicar in publicars" :key="publicar.id">
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                  <div class="card-header text-xl font-semibold">
+                    {{ publicar.inventario_id }}
+                  </div>
+                  <div class="card-body">
+                    <p class="mt-2 text-gray-700">{{ publicar.precio }}</p>
+                    <p>cantidad: {{ publicar.cantidad }}</p>
+                    <div class="mt-4">
+            <a :href="route('publicar.edit', publicar.id)"
+              class="ml-2 bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
+              Editar
+            </a>
+            <button @click="eliminarPublicar(publicar)"
+              class="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+              Eliminar
+            </button>
+          </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Agrega más productos aquí -->
+          </main>
+        </div>
+      </div>
+    </div>
+
+
+  </AppLayout>
+</template>
+
+<script>
+//importaci9nes
+import AppLayout from "@/Layouts/AppLayout.vue";
+import { Inertia } from "@inertiajs/inertia";
+import { Link } from '@inertiajs/inertia-vue3'
+import Welcome from "@/Jetstream/Welcome.vue";
+import JetButton from "@/Jetstream/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import JetInput from "@/Jetstream/Input.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
+import JetActionMessage from "@/Jetstream/ActionMessage.vue";
+import JetSecondaryButton from "@/Jetstream/SecondaryButton.vue";
+
+export default {
+  props: ["publicars"],
+  components: {
+    AppLayout,
+    Welcome,
+    JetActionMessage,
+    JetButton,
+    JetFormSection,
+    JetInput,
+    JetInputError,
+    JetLabel,
+    JetSecondaryButton,
+
+    Link
+  },
+
+  props: {
+    publicars: Array,
+  },
+
+  setup(props) {
+    const eliminarPublicar = (data) => {
+      data._method = "DELETE";
+      Inertia.post("/publicar/" + data.id, data);
+    };
+
+    return { eliminarPublicar };
+  },
+};
+</script>

@@ -1,0 +1,100 @@
+<transition name="modal" appear>
+                            <div v-if="isAddToCartModalOpen" class="fixed inset-0 overflow-y-auto">
+                              <div
+                                class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                                <transition name="ease-in-out duration-300">
+                                  <div v-if="isAddToCartModalOpen" class="fixed inset-0 transition-opacity">
+                                    <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+                                  </div>
+                                </transition>
+
+                                <span class="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
+
+                                <transition name="modal" appear>
+                                  <div v-if="isAddToCartModalOpen" class="fixed inset-0 overflow-y-auto">
+                                    <div
+                                      class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                                      <!-- ... Otro contenido ... -->
+
+                                      <!-- ... Otro contenido ... -->
+
+                                      <transition name="modal" appear>
+                                        <div v-if="isAddToCartModalOpen" class="fixed inset-0 overflow-y-auto">
+                                          <div
+                                            class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                                            <!-- ... Otro contenido ... -->
+
+                                            <transition name="modal" appear>
+                                              <div v-if="isAddToCartModalOpen"
+                                                class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                                                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                                  <div class="sm:flex sm:items-start">
+                                                    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                                                      <!-- Producto -->
+                                                      <div class="mt-8">
+                                                        <p for="product_id" class="text-2xl font-semibold text-gray-800">
+                                                          {{
+                                                            selectedProduct.nombre_producto }}</p>
+                                                        <!-- Precio -->
+                                                        <p class="text-lg text-gray-600">Precio: {{
+                                                          selectedProduct.precio }}Gs. /Kg</p>
+                                                        <!-- Cantidad -->
+                                                        <div class="mt-4">
+                                                          <label for="cantidadrequerida"
+                                                            class="block text-sm font-medium text-gray-700">Cantidad
+                                                            Requerida (Kg)</label>
+                                                          <div class="mt-1 flex rounded-md shadow-sm">
+                                                            <input id="cantidadrequerida" name="cantidadrequerida"
+                                                              type="number" v-model="form.cantidadrequerida"
+                                                              @input="calculateSubtotal"
+                                                              class="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-md sm:text-sm border-gray-300">
+
+                                                          </div>
+                                                          <p class="mt-2 text-red-400 text-sm">Min: 1Kg, Max: {{
+                                                            selectedProduct.cantidad }} Kg</p>
+                                                        </div>
+
+                                                        <!-- Subtotal -->
+                                                        <div class="mt-4">
+                                                          <label for="subtotal"
+                                                            class="block text-lg font-semibold text-gray-700">Subtotal</label>
+                                                          <p id="subtotal"
+                                                            class="mt-1 block text-lg font-medium text-indigo-600">
+                                                            ${{ calculateSubtotal() }}
+                                                          </p>
+                                                        </div>
+
+                                                        <div class="mt-4">
+                                                          <label for="subtotal"
+                                                            class="block text-lg font-semibold text-gray-700">carrito id</label>
+                                                          <p id="subtotal"
+                                                            class="mt-1 block text-lg font-medium text-indigo-600">
+                                                            {{ carrito.id }}
+                                                          </p>
+                                                        </div>
+
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                                  <button @click="addItemToCart" type="button"
+                                                    class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                                    Agregar al Carrito
+                                                  </button>
+                                                  <button @click="closeAddToCartModal" type="button"
+                                                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                                    Cancelar
+                                                  </button>
+                                                </div>
+                                              </div>
+                                            </transition>
+                                          </div>
+                                        </div>
+                                      </transition>
+                                    </div>
+                                  </div>
+                                </transition>
+                              </div>
+                            </div>
+                          </transition>
