@@ -6,37 +6,31 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\DatosEnvio;
 use App\Models\Ciudad;
+use App\Models\Ciudade;
 use App\Models\DatosPago;
+use App\Models\Departamento;
+use App\Models\Envio;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Redirect;
 
 
 
 
-class DatosEnvioController extends Controller
+class EnvioController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-/*         $datosenvio = DatosEnvio::all();
-        return Inertia::render('DatosEnvio/Listado', ['datosenvio' => $datosenvio]); */
+        $envios = Envio::with('ciudade.departamento', 'venta.user')->get();
 
+        return Inertia::render('Envios/Listado', ['envios' => $envios]);
     }
 
 
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create(Request $request)
     {
-      /*   // Validación de los datos del formulario
+        /*   // Validación de los datos del formulario
         $request->validate([
             'numero_tarjeta' => 'required',
             'fecha_expiracion' => 'required',
@@ -64,7 +58,6 @@ class DatosEnvioController extends Controller
 
         // Puedes devolver una respuesta de éxito, redirigir a otra página, etc.
         return response()->json(['datos_pago' => 'Pagado con exito']); */
-        
     }
 
     /**
@@ -76,34 +69,51 @@ class DatosEnvioController extends Controller
     public function store(Request $request)
     {
         // Validaciones (puedes ajustar según tus necesidades)
-       
+
         // Puedes hacer algo más después de guardar, como redirigir o devolver una respuesta
-     }
-
-
-
-    // ... Puedes continuar implementando las acciones update, edit, y destroy según tus necesidades ...
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
+    public function edit($id)
+    {
+        $envio = Envio::with('ciudade.departamento', 'venta.user')
+            ->find($id);
+        $departamentos = Departamento::select('id', 'nombre')
+            ->get();
+        $ciudades = Ciudade::select('id', 'nombre_ciudad')
+            ->get();
+
+        return Inertia::render('Envios/FormEditar', [
+            'envio' => $envio,
+            'departamentos' => $departamentos,
+            'ciudades' => $ciudades
+        ]);
+    }
+
+
     public function update(Request $request, $id)
     {
-        // Valida los datos del formulario
+        $request->validate([
+            'telefono' => 'required|string',
+            'direccion' => 'required|string',
+            'costo_envio' => 'required|numeric',
+            'fecha_envio' => 'required|date',
+            'estado_envio' => 'required|string',
+            'ciudade_id' => 'required|integer',
+        ]);
+
+        $envio = Envio::findOrFail($id);
+
+        $envio->update([
+            'telefono' => $request->input('telefono'),
+            'direccion' => $request->input('direccion'),
+            'costo_envio' => $request->input('costo_envio'),
+            'fecha_envio' => $request->input('fecha_envio'),
+            'estado_envio' => $request->input('estado_envio'),
+            'ciudade_id' => $request->input('ciudade_id')
+        ]);
+
+        return Redirect::route('envios.index')->with('success', 'Envío actualizado exitosamente.');
     }
 
     /**
@@ -112,7 +122,5 @@ class DatosEnvioController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-    }
+    public function destroy($id) {}
 }

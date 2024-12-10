@@ -19,17 +19,13 @@ class ProveedoresController extends Controller
         return Inertia::render('Proveedores/Listado', ['proveedores' => $proveedores]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
     public function create()
     {
         return Inertia::render('Proveedores/FormNuevo');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
         $request->validate(
@@ -40,7 +36,7 @@ class ProveedoresController extends Controller
         );
         Proveedore::create($request->all());
 
-        return Redirect::route('proveedores.index');
+        return Redirect::route('proveedores.index')->with('success', 'Proveedor registrado exitosamente.');
     }
 
     /**
@@ -81,7 +77,7 @@ class ProveedoresController extends Controller
         $proveedores->where('id', $request->id)
             ->update($request->only('nombre_proveedor', 'informacion_contacto'));
 
-        return Redirect::route('proveedores.index');
+        return Redirect::route('proveedores.index')->with('success', 'Proveedor actualizado exitosamente.');
     }
 
     /**

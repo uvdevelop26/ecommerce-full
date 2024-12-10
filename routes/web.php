@@ -10,7 +10,7 @@ use App\Http\Controllers\PublicarController;
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\CiudadeController;
-use App\Http\Controllers\DatosEnvioController;
+use App\Http\Controllers\EnvioController;
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ItemcarritoController;
 use App\Http\Controllers\DatosPagoController;
@@ -83,7 +83,7 @@ Route::resource('carritos', CarritoController::class)
 Route::resource('datospago', DatosPagoController::class)
     ->middleware(['auth:sanctum', 'verified']);
 
-Route::resource('datosenvio', DatosEnvioController::class)
+Route::resource('envios', EnvioController::class)
     ->middleware(['auth:sanctum', 'verified']);
 
 

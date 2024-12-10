@@ -80,7 +80,7 @@ class ProductosController extends Controller
             'user_id' => $userId,
         ]);
 
-        return Redirect::route('productos.index');
+        return Redirect::route('productos.index')->with('success', 'Producto registrado exitosamente.');
     }
 
     public function show($id)
@@ -126,7 +126,7 @@ class ProductosController extends Controller
         
         $producto->update($request->all());
 
-        return Redirect::route('productos.index');
+        return Redirect::route('productos.index')->with('success', 'Producto actualizado exitosamente.');
     }
 
 

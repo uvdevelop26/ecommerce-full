@@ -1,23 +1,48 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import RoundedLink from "../../Components/RoundedLink.vue";
+import FlashMessage from "../../Components/FlashMessage.vue";
+import QuestionAlert from "../../Components/QuestionAlert.vue";
 import Edit from "../../Components/icons/Edit.vue";
 import Delete from "../../Components/icons/Delete.vue";
 import Pagination from "../../Components/Pagination.vue";
 import { Inertia } from "@inertiajs/inertia";
 import JetInput from "@/Jetstream/Input.vue";
-import { reactive, watchEffect, ref } from "vue";
+import { reactive, watchEffect, ref, computed, onMounted } from "vue";
 import { pickBy } from "lodash";
 import { Link } from "@inertiajs/inertia-vue3";
 
 const props = defineProps({
     proveedores: Array,
+    flash: Object,
 });
+
+const flashMessage = ref("");
+const questionAlert = ref(null);
+
+const successMessage = computed(() => props.flash.message);
+
+const hideFlashMessage = () => {
+    setTimeout(() => {
+        flashMessage.value = "";
+        props.flash.message = "";
+        successMessage.value = "";
+    }, 5000);
+};
 
 const eliminarproveedores = (data) => {
     data._method = "DELETE";
     Inertia.post("/proveedores/" + data.id, data);
+
+    questionAlert.value = null;
 };
+
+onMounted(() => {
+    if (successMessage.value) {
+        flashMessage.value = successMessage.value;
+        hideFlashMessage();
+    }
+});
 </script>
 <template>
     <AppLayout title="Listado de Proveedores">
@@ -33,7 +58,10 @@ const eliminarproveedores = (data) => {
                 </RoundedLink>
             </h2>
         </template>
-        <section class="pb-12">
+        <section class="pb-12 relative">
+          <!-- Mensaje Flash -->
+          <FlashMessage :success="flashMessage" />
+          <!-- tabla -->
             <div class="max-w-7xl mx-auto overflow-x-auto">
                 <table
                     class="w-full text-sm whitespace-nowrap border-separate border-spacing-y-2 rounded-md">
@@ -90,15 +118,23 @@ const eliminarproveedores = (data) => {
                                             class="block w-auto h-3 fill-secondary"
                                         />
                                     </Link>
-                                    <Link
-                                        @click="eliminarproveedores(proveedor)"
+                                    <button
+                                        type="button"
+                                        @click="questionAlert = index"
                                         class="text-sm font-medium text-red-500 flex items-center gap-1 hover:underline">
                                         Eliminar
                                         <Delete
                                             class="block w-auto h-3 fill-red-500"
                                         />
-                                    </Link>
+                                    </button>
                                 </td>
+                                <QuestionAlert 
+                                    :show="questionAlert === index" 
+                                    question="¿Desea Eliminar este Proveedor?"
+                                    :info="`Eliminar Proveedor ${proveedor.nombre_proveedor}`"
+                                    @close="questionAlert = null" 
+                                    @continues="eliminarproveedores(proveedor)"
+                                />
                             </tr>
                         </template>
                     </tbody>

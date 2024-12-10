@@ -79,7 +79,7 @@ class ItemcarritoController extends Controller
             'producto_id' => $request->input('producto_id'), // Asegúrate del nombre correcto del campo en el formulario
         ]);
 
-        // return Inertia::render('Carrito/Index', ['carritos' => $carrito]);
+        return Redirect::route('inicio.index')->with('success', 'Producto agregado al Carrito.');
     }
 
 

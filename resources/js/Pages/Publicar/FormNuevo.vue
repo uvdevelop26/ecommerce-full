@@ -48,12 +48,14 @@ const guardarPublicar = () => {
 
 <template>
     <app-layout title="Nueva Publicación">
+    <!-- Encabezado -->
         <template #header>
             <h2 class="text-md font-bold text-primary leading-tight">
                 Nueva Publicacion
             </h2>
         </template>
-        <div class="py-12">
+        <!-- sección -->
+        <section class="py-12">
             <div class="max-w-7x1 mx-auto">
                 <jet-form-section @submitted="guardarPublicar">
                     <template #title>
@@ -77,20 +79,17 @@ const guardarPublicar = () => {
                             <select
                                 id="id_producto"
                                 class="mt-1 block w-full border-gray-300 rounded-3xl shadow-sm focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50"
-                                v-model="form.producto_id"
-                            >
+                                v-model="form.producto_id">
                                 <option
                                     :value="null"
                                     class="text-gray-400"
-                                    disabled
-                                >
+                                    disabled>
                                     Seleccionar Producto
                                 </option>
                                 <option
                                     v-for="producto in productos"
                                     :key="producto.id"
-                                    :value="producto.id"
-                                >
+                                    :value="producto.id">
                                     {{ producto.nombre_producto }}
                                 </option>
                             </select>
@@ -148,13 +147,11 @@ const guardarPublicar = () => {
                             <select
                                 id="estado"
                                 class="mt-1 block w-full border-gray-300 rounded-3xl shadow-sm focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50"
-                                v-model="form.estado"
-                            >
+                                v-model="form.estado">
                                 <option
                                     :value="null"
                                     class="text-gray-400"
-                                    disabled
-                                >
+                                    disabled>
                                     Seleccionar Estado
                                 </option>
                                 <option value="1">Activo / Visible</option>
@@ -217,6 +214,6 @@ const guardarPublicar = () => {
                     </template>
                 </jet-form-section>
             </div>
-        </div>
+        </section>
     </app-layout>
 </template>

@@ -29,8 +29,11 @@ const logout = () => {
     <div class="min-h-screen bg-white">
         <nav class="bg-white">
             <!-- promo setup -->
-            <div class="h-5 w-full fixed bg-primary flex items-center text-center z-50">
-                <span class="text-xs font-bold text-white">Recibe descuento con tu primera compra</span>
+            <div
+                class="h-5 w-full fixed bg-primary flex items-center text-center z-50">
+                <span class="text-xs font-bold text-white">
+                    Recibe descuento con tu primera compra
+                </span>
             </div>
             <div class="container pt-5">
                 <div
@@ -39,8 +42,7 @@ const logout = () => {
                     <div class="-mr-2 flex items-center sm:hidden">
                         <button
                             class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
-                            @click="showingNavigationDropdown =
-                                    !showingNavigationDropdown">
+                            @click="showingNavigationDropdown = !showingNavigationDropdown">
                             <Hamburger
                                 :changePattern="showingNavigationDropdown"
                             />
@@ -68,16 +70,9 @@ const logout = () => {
                             :active="route().current('categorias.index')">
                             Categorias
                         </NavLink>
-                        <!--  <NavLink
-                            :href="route('ventas.index')"
-                            :active="route().current('ventas.index')"
-                        >
-                            Ventas
-                        </NavLink> -->
                         <NavLink
                             :href="route('proveedores.index')"
-                            :active="route().current('proveedores.index')"
-                        >
+                            :active="route().current('proveedores.index')">
                             Proveedores
                         </NavLink>
                         <NavLink
@@ -85,20 +80,20 @@ const logout = () => {
                             :active="route().current('productos.index')">
                             Productos
                         </NavLink>
-                     <!--    <NavLink
-                            :href="route('clientes.index')"
-                            :active="route().current('clientes.index')">
-                            Clientes
-                        </NavLink> -->
                         <NavLink
                             :href="route('carritos.index')"
                             :active="route().current('carritos.index')">
-                            Carritos
+                            Carrito
                         </NavLink>
+                         <NavLink
+                            :href="route('ventas.index')"
+                            :active="route().current('ventas.index')">
+                            Ventas
+                        </NavLink>                     
                         <NavLink
-                            :href="route('datosenvio.index')"
-                            :active="route().current('datosenvio.index')">
-                            Envio
+                            :href="route('envios.index')"
+                            :active="route().current('envios.index')">
+                            Envios
                         </NavLink>
                     </div>
                     <!-- search button -->
@@ -116,13 +111,11 @@ const logout = () => {
                                             :alt="$page.props.auth.user.name"
                                         />
                                     </button>
-
                                     <span v-else class="inline-flex rounded-md">
                                         <button
                                             type="button"
                                             class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
                                             {{ $page.props.auth.user.name }}
-
                                             <svg
                                                 class="ml-2 -mr-0.5 h-4 w-4"
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -172,23 +165,20 @@ const logout = () => {
                 <div
                     :class="{
                         block: showingNavigationDropdown,
-                        hidden: !showingNavigationDropdown,}"
+                        hidden: !showingNavigationDropdown,
+                    }"
                     class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink
+                        <!-- <ResponsiveNavLink
                             :href="route('dashboard')"
-                            :active="route().current('dashboard')">
+                            :active="route().current('dashboard')"
+                        >
                             Dashboard
-                        </ResponsiveNavLink>
+                        </ResponsiveNavLink> -->
                         <ResponsiveNavLink
                             :href="route('inicio.index')"
                             :active="route().current('inicio.index')">
                             Inicio
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            :href="route('proveedores.index')"
-                            :active="route().current('proveedores.index')">
-                            Proveedores
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
                             :href="route('categorias.index')"
@@ -196,9 +186,29 @@ const logout = () => {
                             Categorias
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
+                            :href="route('proveedores.index')"
+                            :active="route().current('proveedores.index')">
+                            Proveedores
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
                             :href="route('productos.index')"
                             :active="route().current('productos.index')">
                             Productos
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            :href="route('carritos.index')"
+                            :active="route().current('carritos.index')">
+                            Carrito
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            :href="route('ventas.index')"
+                            :active="route().current('ventas.index')">
+                            Ventas
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            :href="route('envios.index')"
+                            :active="route().current('envios.index')">
+                            Envios
                         </ResponsiveNavLink>
                     </div>
 
@@ -249,7 +259,7 @@ const logout = () => {
             </div>
         </nav>
 
-          <!--    Page Heading -->
+        <!--    Page Heading -->
         <header v-if="$slots.header" class="bg-white">
             <div class="container py-6 px-4 sm:px-6 lg:px-8">
                 <slot name="header" />

@@ -5,6 +5,7 @@ import Delete from "../../Components/icons/Delete.vue";
 import Modal from "../../Components/Modal.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import JetButton from "@/Jetstream/Button.vue";
+import QuestionAlert from "../../Components/QuestionAlert.vue";
 import RoundedLink from "../../Components/RoundedLink.vue";
 import { Inertia } from "@inertiajs/inertia";
 import JetInput from "@/Jetstream/Input.vue";
@@ -14,6 +15,7 @@ import { Link, useForm } from "@inertiajs/inertia-vue3";
 
 const modalIndex = ref(null);
 const stockMax = ref(1);
+const questionAlert = ref(null);
 
 const props = defineProps({
     carrito: Array,
@@ -29,6 +31,8 @@ const integerToDecimal = (number) => {
 const eliminaritem = (data) => {
     data._method = "DELETE";
     Inertia.post("/itemcarritos/" + data.id, data);
+
+    questionAlert.value = null;
 };
 
 const closeModal = () => {
@@ -175,14 +179,15 @@ const editarItem = () => {
                                             class="block w-auto h-3 fill-secondary"
                                         />
                                     </button>
-                                    <Link
-                                        @click="eliminaritem(item)"
+                                    <button
+                                        type="button"
+                                        @click="questionAlert = index"
                                         class="text-sm font-medium text-red-500 flex items-center gap-1 hover:underline">
                                         Eliminar
                                         <Delete
                                             class="block w-auto h-3 fill-red-500"
                                         />
-                                    </Link>
+                                    </button>
                                     <!-- modal Form -->
                                     <Modal
                                         :show="modalIndex === index"
@@ -259,6 +264,13 @@ const editarItem = () => {
                                         </form>
                                     </Modal>
                                 </td>
+                                <QuestionAlert 
+                                    :show="questionAlert === index" 
+                                    question="¿Desea Eliminar del Carrito?"
+                                    :info="`Eliminar ${item.producto.nombre_producto} del Carrito`"
+                                    @close="questionAlert = null" 
+                                    @continues="eliminaritem(item)"
+                                />
                             </tr>
                         </template>
                     </tbody>

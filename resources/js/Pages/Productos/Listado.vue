@@ -3,19 +3,46 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { Inertia } from "@inertiajs/inertia";
 import { Link } from "@inertiajs/inertia-vue3";
+import QuestionAlert from "../../Components/QuestionAlert.vue";
 import Pagination from "../../Components/Pagination.vue";
+import FlashMessage from "../../Components/FlashMessage.vue";
 import Edit from "../../Components/icons/Edit.vue";
 import Delete from "../../Components/icons/Delete.vue";
 import RoundedLink from "../../Components/RoundedLink.vue";
+import { reactive, watchEffect, ref, onMounted, computed } from "vue";
+
 
 const props = defineProps({
     productos: Array,
+    flash: Object,
 });
+
+const flashMessage = ref("");
+const questionAlert = ref(null);
+
+const successMessage = computed(() => props.flash.message);
+
+const hideFlashMessage = () => {
+    setTimeout(() => {
+        flashMessage.value = "";
+        props.flash.message = "";
+        successMessage.value = "";
+    }, 5000);
+};
 
 const eliminarProductos = (data) => {
     data._method = "DELETE";
     Inertia.post("/productos/" + data.id, data);
+
+    questionAlert.value = null;
 };
+
+onMounted(() => {
+    if (successMessage.value) {
+        flashMessage.value = successMessage.value;
+        hideFlashMessage();
+    }
+});
 </script>
 
 <template>
@@ -32,7 +59,11 @@ const eliminarProductos = (data) => {
                 </RoundedLink>
             </h2>
         </template>
-        <section class="pb-12">
+
+        <section class="pb-12 relative">
+         <!-- Mensaje Flash -->
+            <FlashMessage :success="flashMessage" />
+         <!-- tabla -->
             <div class="max-w-7xl mx-auto overflow-x-auto">
                 <table
                     class="w-full text-sm whitespace-nowrap border-separate border-spacing-y-2 rounded-md">
@@ -130,15 +161,23 @@ const eliminarProductos = (data) => {
                                             class="block w-auto h-3 fill-secondary"
                                         />
                                     </Link>
-                                    <Link
-                                        @click="eliminarProductos(producto)"
+                                    <button
+                                        type="button"
+                                        @click="questionAlert = index"
                                         class="text-sm font-medium text-red-500 flex items-center gap-1 hover:underline">
                                         Eliminar
                                         <Delete
                                             class="block w-auto h-3 fill-red-500"
                                         />
-                                    </Link>
+                                    </button>
                                 </td>
+                                <QuestionAlert 
+                                    :show="questionAlert === index" 
+                                    question="¿Desea Eliminar este Producto?"
+                                    :info="`Eliminar Producto ${producto.nombre_producto}`"
+                                    @close="questionAlert = null" 
+                                    @continues="eliminarProductos(producto)"
+                                />
                             </tr>
                         </template>
                     </tbody>

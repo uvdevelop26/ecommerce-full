@@ -28,22 +28,19 @@ class VentaController extends Controller
      */
     public function index()
     {
-
-
-
-
-        /* $ventas = Ventas::join('productos', 'ventas.id_producto', '=', 'productos.id')
-            ->join('clientes', 'ventas.id_cliente', '=', 'clientes.id')
-            ->select('ventas.*', 'productos.nombre_producto', 'clientes.nombre')
+        $ventas = Venta::with([
+            'metodo_pago:id,metodo',
+            'user:id,name',
+            'detalle_ventas.producto',
+            'envios'
+        ])
+            ->orderBy('id', 'desc')
             ->get();
-        return Inertia::render('Ventas/Listado', ['ventas' => $ventas]); */
+
+        return Inertia::render('Ventas/Listado', ['ventas' => $ventas]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create()
     {
 
@@ -66,28 +63,9 @@ class VentaController extends Controller
             'departamentos' => $departamentos,
             'ciudades' => $ciudades
         ]);
-
-
-        /*   $ventas = Ventas::all();
-        $clientes = Clientes::all();
-        $productos = Productos::all();
-
-
-        return Inertia::render('Ventas/FormNuevo', [
-           'ventas' => $ventas,
-            'clientes' => $clientes,
-            'productos' => $productos,
-            
-
-        ]); */
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
         $userId = Auth::user()->id;
@@ -171,9 +149,17 @@ class VentaController extends Controller
                 ]);
             }
 
+            //vaciar el carrito del usuario actual
+
+            $currentCarrito = Carrito::where('user_id', $userId)->first();
+
+            if ($currentCarrito) {
+                $currentCarrito->items()->delete();
+            }
+
             DB::commit();
 
-            return Redirect::route('inicio.index');
+            return Redirect::route('inicio.index')->with('success', 'Compra realizada con éxito.');
 
             // return response()->json(['message' => 'Venta creada exitosamente'], 201);
         } catch (\Exception $e) {
@@ -182,15 +168,18 @@ class VentaController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function show($id)
     {
-        //
+        $venta = Venta::with(['detalle_ventas.producto', 'metodo_pago'])->find($id);
+
+        $metodosPago = MetodoPago::select('id', 'metodo')
+            ->get();
+
+        return Inertia::render('Ventas/Mostrar', [
+            'venta' => $venta,
+            'metodosPago' => $metodosPago
+        ]);
     }
 
     /**
@@ -214,15 +203,34 @@ class VentaController extends Controller
         ); */
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(Request $request, $id)
     {
+
+        $request->validate([
+            'total' => 'required|numeric',
+            'estado' => 'required|boolean',
+            'tipo_entrega' => 'required|in:envio,tienda',
+            'metodo_pago_id' => 'required|integer',
+            //'user_id' => 'required|integer',
+        ]);
+
+        //  $userId = Auth::user()->id;
+
+        $venta = Venta::findOrFail($id);
+
+        $venta->update([
+            'total' => $request->input('total'),
+            'estado' => $request->input('estado'),
+            'tipo_entrega' => $request->input('tipo_entrega'),
+            'metodo_pago_id' => $request->input('metodo_pago_id'),
+        ]);
+
+
+        return Redirect::route('ventas.index')->with('success', 'Compra Actualizada.'); 
+
+
+
         /* $request->validate([
 
             'id_producto' => 'required',
@@ -232,10 +240,10 @@ class VentaController extends Controller
             // Agrega aquí las reglas de validación para los campos del formulario de edición de productos
         ]);
 
-        $ventas = Ventas::findOrFail($id);
+        
         $ventas->update($request->all());
 
-        return Redirect::route('ventas.index'); */
+       */
     }
 
     /**

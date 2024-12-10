@@ -1,23 +1,46 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import JetButton from "@/Jetstream/Button.vue";
 import RoundedLink from "../../Components/RoundedLink.vue";
+import FlashMessage from "../../Components/FlashMessage.vue";
+import QuestionAlert from "../../Components/QuestionAlert.vue";
 import Edit from "../../Components/icons/Edit.vue";
 import Delete from "../../Components/icons/Delete.vue";
 import { Inertia } from "@inertiajs/inertia";
 import JetInput from "@/Jetstream/Input.vue";
-import { reactive, watchEffect, ref } from "vue";
+import { reactive, watchEffect, ref, onMounted, computed } from "vue";
 import { pickBy } from "lodash";
 import { Link } from "@inertiajs/inertia-vue3";
+//import { computed, onMounted } from "vue";
 
 const props = defineProps({
     categorias: Array,
+    flash: Object,
 });
+
+const flashMessage = ref("");
+const questionAlert = ref(null);
+
+const successMessage = computed(() => props.flash.message);
+
+const hideFlashMessage = () => {
+    setTimeout(() => {
+        flashMessage.value = "";
+        props.flash.message = "";
+        successMessage.value = "";
+    }, 5000);
+};
 
 const eliminarCategorias = (data) => {
     data._method = "DELETE";
     Inertia.post("/categorias/" + data.id, data);
 };
+
+onMounted(() => {
+    if (successMessage.value) {
+        flashMessage.value = successMessage.value;
+        hideFlashMessage();
+    }
+});
 </script>
 <template>
     <AppLayout title="Listado de Categorías">
@@ -33,7 +56,11 @@ const eliminarCategorias = (data) => {
                 </RoundedLink>
             </h2>
         </template>
-        <div class="pb-12">
+
+        <section class="pb-12 relative">
+            <!-- Mensaje Flash -->
+            <FlashMessage :success="flashMessage" />
+            <!-- tabla -->
             <div class="max-w-7xl mx-auto overflow-x-auto">
                 <table
                     class="w-full text-sm whitespace-nowrap border-separate border-spacing-y-2 rounded-md">
@@ -74,33 +101,40 @@ const eliminarCategorias = (data) => {
                                     {{ index + 1 }}
                                 </td>
                                 <td
-                                    class="bg-gray-50 px-6 py-4 group-hover:bg-gray-100">
+                                    class="bg-gray-50 px-6 py-4 group-hover:bg-gray-100 capitalize">
                                     {{ categoria.nombre_categoria }}
                                 </td>
                                 <td
                                     class="rounded-r-lg bg-gray-50 px-6 py-4 flex items-center gap-4 group-hover:bg-gray-100">
                                     <Link
-                                        :href="route('categorias.edit', categoria.id)"
+                                        :href="route('categorias.edit',categoria.id)"
                                         class="text-sm font-medium text-secondary flex items-center gap-1 hover:underline">
                                         Editar
                                         <Edit
                                             class="block w-auto h-3 fill-secondary"
                                         />
                                     </Link>
-                                    <Link
-                                        @click="eliminarCategorias(categoria)"
+                                    <button
+                                        type="button"
+                                        @click="questionAlert = index"
                                         class="text-sm font-medium text-red-500 flex items-center gap-1 hover:underline">
                                         Eliminar
                                         <Delete
                                             class="block w-auto h-3 fill-red-500"
                                         />
-                                    </Link>
+                                    </button>
                                 </td>
+                                <QuestionAlert 
+                                    :show="questionAlert === index" 
+                                    question="¿Desea Eliminar esta Categoría?"
+                                    :info="`Eliminar Categoria ${categoria.nombre_categoria}`"
+                                    @close="questionAlert = null" 
+                                    @continues="eliminarCategorias(categoria)"/>
                             </tr>
                         </template>
                     </tbody>
                 </table>
             </div>
-        </div>
+        </section>
     </AppLayout>
 </template>

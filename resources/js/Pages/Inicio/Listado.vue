@@ -2,14 +2,28 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import CarritoIcon from "../../Components/icons/CarritoIcon.vue";
 import RoundedLink from "../../Components/RoundedLink.vue";
+import FlashMessage from "../../Components/FlashMessage.vue";
 import Car from "../../Components/Car.vue";
+import { reactive, watchEffect, ref, onMounted, computed } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import { Link } from "@inertiajs/inertia-vue3";
-import JetButton from "@/Jetstream/Button.vue";
 
 const props = defineProps({
     publicars: Array,
+    flash: Object
 });
+
+const flashMessage = ref("");
+
+const successMessage = computed(() => props.flash.message);
+
+const hideFlashMessage = () => {
+    setTimeout(() => {
+        flashMessage.value = "";
+        props.flash.message = "";
+        successMessage.value = "";
+    }, 5000);
+};
 
 const isLink = (stringLink) => {
     return (
@@ -18,6 +32,13 @@ const isLink = (stringLink) => {
         stringLink.endsWith(".jpg")
     );
 };
+
+onMounted(() => {
+    if (successMessage.value) {
+        flashMessage.value = successMessage.value;
+        hideFlashMessage();
+    }
+});
 
 
 </script>
@@ -55,7 +76,10 @@ const isLink = (stringLink) => {
         </section> -->
         <!-- Seccion 2-->
         <section
-            class="bg-white pb-12 flex flex-col gap-4 md:flex-row md:flex-wrap md:justify-star">
+            class="bg-white pb-12 flex flex-col gap-4 md:flex-row md:flex-wrap md:justify-star relative">
+            <!-- Mensaje Flash -->
+            <FlashMessage :success="flashMessage" />
+            <!-- cards -->
             <Car v-for="publicar in publicars" :key="publicar.id">
                 <template #imagen>
                     <img
