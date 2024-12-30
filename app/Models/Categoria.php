@@ -15,8 +15,6 @@ class Categoria extends Model
         'nombre_categoria',
     ];
 
-    public $timestamps = false;
-
     /* relación uno a muchos */
 
     public function productos()

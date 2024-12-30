@@ -14,7 +14,8 @@ module.exports = {
         extend: {
             colors: {
                 'primary': '#003D29',
-                'secondary': '#20A220'
+                'secondary': '#20A220',
+                'alternative' : '#FBF0E4',
             },
             fontFamily: {
                 sans: ['Raleway', ...defaultTheme.fontFamily.sans],

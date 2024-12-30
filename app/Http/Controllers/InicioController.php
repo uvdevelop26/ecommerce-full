@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Publicar;
 use App\Models\User;
 use App\Models\Carrito;
+use App\Models\Categoria;
 use App\Models\Ciudad;
 use App\Models\Departamento;
 use App\Models\Productos;
@@ -15,40 +16,26 @@ use Illuminate\Support\Facades\Redirect;
 
 class InicioController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
 
-        $publicars = Publicar::with('producto', 'user')
+        $queries = ['search'];
+
+        $publicars = Publicar::with('producto.categoria', 'user')
             ->where('estado', 1)
-            ->orderBy('created_at', 'desc')
+            ->inRandomOrder()
+            ->filter($request->only($queries))
             ->get();
 
-        $banner = Publicar::with('producto')->inRandomOrder()->first();
+        $banner = Publicar::with('producto.categoria')->inRandomOrder()->first();
+
+        $categorias = Categoria::select('id', 'nombre_categoria')->get();
 
         return Inertia::render('Inicio/Listado', [
             'publicars' => $publicars,
-            'banner' => $banner
+            'banner' => $banner,
+            'categorias' => $categorias,
+            'filters' => $request->all($queries)
         ]);
-
-        /*  $ciudades = Ciudad::all();
-        $departamento = Departamento::all();
-        $publicar = Publicar::join('productos', 'publicars.producto_id', '=', 'productos.id')
-            ->join('users', 'publicars.user_id', '=', 'users.id')
-            
-            ->select('publicars.*', 'productos.nombre_producto', 'users.name')
-            ->get();
-
-        // Verificar si el usuario está autenticado antes de acceder a sus propiedades
-        $users = Auth::check() ? Auth::user() : null;
-
-        return Inertia::render('Inicio/Listado', [
-            'publicars' => $publicar,
-            'users' => $users,
-            'ciudades' => $ciudades,
-            'departamentos' => $departamento,
-
-        ]); */
     }
-
-    // Otras funciones relacionadas con la gestión de publicaciones
 }

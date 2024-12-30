@@ -13,7 +13,6 @@ const props = defineProps({
 });
 
 const form = useForm({
-    _method: "POST",
     id: null,
     nombre_categoria: null,
 });

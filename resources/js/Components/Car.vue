@@ -3,7 +3,7 @@
 
 <template>
     <div
-        class="w-full rounded-md overflow-hidden shadow bg-gray-100 max-w-xs mx-auto">
+        class="w-full rounded-md overflow-hidden shadow bg-gray-100 max-w-[300px]">
         <figure class="h-44 w-full bg-gray-100">
             <slot name="imagen" />
            <!--  -->

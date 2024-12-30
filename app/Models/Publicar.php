@@ -26,4 +26,15 @@ class Publicar extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    //Query scopes
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->whereHas('producto.categoria', function ($query) use ($search) {
+                $query->where('id', $search);
+            });
+        });
+    }
 }

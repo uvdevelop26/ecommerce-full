@@ -1,12 +1,10 @@
 <script setup>
 import { ref } from "vue";
 import { Head, Link, router } from "@inertiajs/vue3";
-import ApplicationMark from "@/Components/ApplicationMark.vue";
 import Hamburger from "../Components/icons/Hamburger.vue";
+import Billboard from "../Components/Billboard.vue";
 import LogoApp from "../Components/icons/LogoApp.vue";
-import RoundedLink from "../Components/RoundedLink.vue";
 import Search from "../Components/icons/Search.vue";
-import Banner from "@/Components/Banner.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
 import NavLink from "@/Components/NavLink.vue";
@@ -14,6 +12,7 @@ import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
 
 defineProps({
     title: String,
+    messageBillboard: String
 });
 
 const showingNavigationDropdown = ref(false);
@@ -29,15 +28,17 @@ const logout = () => {
     <div class="min-h-screen bg-white">
         <nav class="bg-white">
             <!-- promo setup -->
-            <div
+            <Billboard :message="messageBillboard" />
+            <!-- <div
                 class="h-5 w-full fixed bg-primary flex items-center text-center z-50">
                 <span class="text-xs font-bold text-white">
                     Recibe descuento con tu primera compra
                 </span>
-            </div>
-            <div class="container pt-5">
+            </div> -->
+            <div class="container">
                 <div
-                    class="h-16 flex items-center justify-between border-b border-gray-200 md:h-20 md:justify-start md:gap-8">
+                    class="h-16 fixed w-[96.1%] left-1/2 -translate-x-1/2 z-50 flex bg-white items-center justify-between border-b border-gray-200 max-w-screen-2xl lg:w-[91.1%] md:h-20 md:justify-start md:gap-8"
+                    :class="messageBillboard ? 'top-5' : 'top-0'">
                     <!-- toggle button -->
                     <div class="-mr-2 flex items-center sm:hidden">
                         <button
@@ -57,6 +58,100 @@ const logout = () => {
                         <span class="text-xs font-bold text-primary">
                             Agroagil
                         </span>
+                    </div>
+                     <!-- navbody movile -->
+                    <div
+                        :class="{
+                            block: showingNavigationDropdown,
+                            hidden: !showingNavigationDropdown,}"
+                        class="sm:hidden absolute bg-white w-full top-16 shadow-md rounded-b-md">
+                        <div class="pt-2 pb-3 space-y-1">
+                            <!-- <ResponsiveNavLink
+                            :href="route('dashboard')"
+                            :active="route().current('dashboard')"
+                        >
+                            Dashboard
+                        </ResponsiveNavLink> -->
+                            <ResponsiveNavLink
+                                :href="route('inicio.index')"
+                                :active="route().current('inicio.index')">
+                                Inicio
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink
+                                :href="route('categorias.index')"
+                                :active="route().current('categorias.index')">
+                                Categorias
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink
+                                :href="route('proveedores.index')"
+                                :active="route().current('proveedores.index')">
+                                Proveedores
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink
+                                :href="route('productos.index')"
+                                :active="route().current('productos.index')">
+                                Productos
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink
+                                :href="route('carritos.index')"
+                                :active="route().current('carritos.index')">
+                                Carrito
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink
+                                :href="route('ventas.index')"
+                                :active="route().current('ventas.index')">
+                                Ventas
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink
+                                :href="route('envios.index')"
+                                :active="route().current('envios.index')">
+                                Envios
+                            </ResponsiveNavLink>
+                        </div>
+
+                        <div class="pt-4 pb-1 border-t border-gray-200">
+                            <div class="flex items-center px-4">
+                                <div
+                                    v-if="$page.props.jetstream.managesProfilePhotos"
+                                    class="shrink-0 mr-3">
+                                    <img
+                                        class="h-10 w-10 rounded-full object-cover"
+                                        :src="$page.props.auth.user.profile_photo_url"
+                                        :alt="$page.props.auth.user.name"
+                                    />
+                                </div>
+                                <div>
+                                    <div
+                                        class="font-medium text-base text-gray-800">
+                                        {{ $page.props.auth.user.name }}
+                                    </div>
+                                    <div
+                                        class="font-medium text-sm text-gray-500">
+                                        {{ $page.props.auth.user.email }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 space-y-1">
+                                <ResponsiveNavLink
+                                    :href="route('profile.show')"
+                                    :active="route().current('profile.show')">
+                                    Profile
+                                </ResponsiveNavLink>
+                                <ResponsiveNavLink
+                                    v-if="$page.props.jetstream.hasApiFeatures"
+                                    :href="route('api-tokens.index')"
+                                    :active="route().current('api-tokens.index')">
+                                    API Tokens
+                                </ResponsiveNavLink>
+
+                                <form method="POST" @submit.prevent="logout">
+                                    <ResponsiveNavLink as="button">
+                                        Log Out
+                                    </ResponsiveNavLink>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                     <!-- navbody desktop -->
                     <div class="hidden md:flex md:gap-4">
@@ -85,11 +180,11 @@ const logout = () => {
                             :active="route().current('carritos.index')">
                             Carrito
                         </NavLink>
-                         <NavLink
+                        <NavLink
                             :href="route('ventas.index')"
                             :active="route().current('ventas.index')">
                             Ventas
-                        </NavLink>                     
+                        </NavLink>
                         <NavLink
                             :href="route('envios.index')"
                             :active="route().current('envios.index')">
@@ -132,13 +227,11 @@ const logout = () => {
                                         </button>
                                     </span>
                                 </template>
-
                                 <template #content>
                                     <div
                                         class="block px-4 py-2 text-xs text-gray-400">
                                         Administrar Perfil
                                     </div>
-
                                     <DropdownLink :href="route('profile.show')">
                                         Perfil
                                     </DropdownLink>
@@ -161,106 +254,13 @@ const logout = () => {
                         </div>
                     </div>
                 </div>
-                <!-- navbody movile -->
-                <div
-                    :class="{
-                        block: showingNavigationDropdown,
-                        hidden: !showingNavigationDropdown,
-                    }"
-                    class="sm:hidden">
-                    <div class="pt-2 pb-3 space-y-1">
-                        <!-- <ResponsiveNavLink
-                            :href="route('dashboard')"
-                            :active="route().current('dashboard')"
-                        >
-                            Dashboard
-                        </ResponsiveNavLink> -->
-                        <ResponsiveNavLink
-                            :href="route('inicio.index')"
-                            :active="route().current('inicio.index')">
-                            Inicio
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            :href="route('categorias.index')"
-                            :active="route().current('categorias.index')">
-                            Categorias
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            :href="route('proveedores.index')"
-                            :active="route().current('proveedores.index')">
-                            Proveedores
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            :href="route('productos.index')"
-                            :active="route().current('productos.index')">
-                            Productos
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            :href="route('carritos.index')"
-                            :active="route().current('carritos.index')">
-                            Carrito
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            :href="route('ventas.index')"
-                            :active="route().current('ventas.index')">
-                            Ventas
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            :href="route('envios.index')"
-                            :active="route().current('envios.index')">
-                            Envios
-                        </ResponsiveNavLink>
-                    </div>
-
-                    <div class="pt-4 pb-1 border-t border-gray-200">
-                        <div class="flex items-center px-4">
-                            <div
-                                v-if="$page.props.jetstream.managesProfilePhotos"
-                                class="shrink-0 mr-3">
-                                <img
-                                    class="h-10 w-10 rounded-full object-cover"
-                                    :src="$page.props.auth.user.profile_photo_url"
-                                    :alt="$page.props.auth.user.name"
-                                />
-                            </div>
-                            <div>
-                                <div
-                                    class="font-medium text-base text-gray-800">
-                                    {{ $page.props.auth.user.name }}
-                                </div>
-                                <div class="font-medium text-sm text-gray-500">
-                                    {{ $page.props.auth.user.email }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink
-                                :href="route('profile.show')"
-                                :active="route().current('profile.show')">
-                                Profile
-                            </ResponsiveNavLink>
-
-                            <ResponsiveNavLink
-                                v-if="$page.props.jetstream.hasApiFeatures"
-                                :href="route('api-tokens.index')"
-                                :active="route().current('api-tokens.index')">
-                                API Tokens
-                            </ResponsiveNavLink>
-
-                            <form method="POST" @submit.prevent="logout">
-                                <ResponsiveNavLink as="button">
-                                    Log Out
-                                </ResponsiveNavLink>
-                            </form>
-                        </div>
-                    </div>
-                </div>
             </div>
         </nav>
 
         <!--    Page Heading -->
-        <header v-if="$slots.header" class="bg-white">
+        <header v-if="$slots.header" 
+            class="bg-white"
+            :class="messageBillboard ? 'mt-20 md:mt-24' : 'mt-16 md:mt-20'">
             <div class="container py-6 px-4 sm:px-6 lg:px-8">
                 <slot name="header" />
             </div>

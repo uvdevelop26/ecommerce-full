@@ -13,7 +13,7 @@ class CategoriaController extends Controller
     public function index()
     {
         $categoria = Categoria::orderBy('id', 'desc')
-            ->get();
+            ->paginate(6);
         return Inertia::render('Categorias/Listado', ['categorias' => $categoria]);
     }
 
@@ -35,7 +35,7 @@ class CategoriaController extends Controller
 
         Categoria::create($request->all());
 
-        return Redirect::route('categorias.index')->with('success', 'Categoría registrada exitosamente.');
+        return redirect()->route('categorias.index')->with('success', 'Categoría registrada exitosamente.');
     }
 
 

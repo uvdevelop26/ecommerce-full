@@ -7,6 +7,7 @@ import Edit from "../../Components/icons/Edit.vue";
 import Delete from "../../Components/icons/Delete.vue";
 import Pagination from "../../Components/Pagination.vue";
 import { Inertia } from "@inertiajs/inertia";
+import Utilities from "../../Utilities";
 import JetInput from "@/Jetstream/Input.vue";
 import { reactive, watchEffect, ref, computed, onMounted } from "vue";
 import { pickBy } from "lodash";
@@ -49,7 +50,7 @@ onMounted(() => {
         <!-- Encabezado -->
         <template #header>
             <h2
-                class="text-md font-bold text-primary leading-tight flex items-center flex-wrap justify-between">
+                class="text-md font-bold text-primary leading-tight flex items-center flex-wrap justify-between max-w-7xl mx-auto">
                 Listado de Proveedores
                 <RoundedLink
                     :href="route('proveedores.create')"
@@ -59,9 +60,9 @@ onMounted(() => {
             </h2>
         </template>
         <section class="pb-12 relative">
-          <!-- Mensaje Flash -->
-          <FlashMessage :success="flashMessage" />
-          <!-- tabla -->
+            <!-- Mensaje Flash -->
+            <FlashMessage :success="flashMessage" />
+            <!-- tabla -->
             <div class="max-w-7xl mx-auto overflow-x-auto">
                 <table
                     class="w-full text-sm whitespace-nowrap border-separate border-spacing-y-2 rounded-md">
@@ -74,6 +75,9 @@ onMounted(() => {
                             <th class="pb-4 pt-4 px-6 bg-secondary">Nombre</th>
                             <th class="pb-4 pt-4 px-6 bg-secondary">
                                 Información
+                            </th>
+                            <th class="pb-4 pt-4 px-6 bg-secondary">
+                                Fecha Creación
                             </th>
                             <th
                                 class="pb-4 pt-4 px-6 rounded-r-lg bg-secondary">
@@ -109,6 +113,10 @@ onMounted(() => {
                                     {{ proveedor.informacion_contacto }}
                                 </td>
                                 <td
+                                    class="bg-gray-50 px-6 py-4 group-hover:bg-gray-100">
+                                    {{ Utilities.getFormattedDate(proveedor.created_at) }}
+                                </td>
+                                <td
                                     class="rounded-r-lg bg-gray-50 px-6 py-4 flex items-center gap-4 group-hover:bg-gray-100">
                                     <Link
                                         :href="route('proveedores.edit', proveedor.id)"
@@ -128,11 +136,11 @@ onMounted(() => {
                                         />
                                     </button>
                                 </td>
-                                <QuestionAlert 
-                                    :show="questionAlert === index" 
+                                <QuestionAlert
+                                    :show="questionAlert === index"
                                     question="¿Desea Eliminar este Proveedor?"
                                     :info="`Eliminar Proveedor ${proveedor.nombre_proveedor}`"
-                                    @close="questionAlert = null" 
+                                    @close="questionAlert = null"
                                     @continues="eliminarproveedores(proveedor)"
                                 />
                             </tr>

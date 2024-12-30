@@ -49,16 +49,39 @@ Route::middleware([
     })->name('dashboard');
 });
 
-Route::resource('inicio', InicioController::class)
-    ->middleware(['auth:sanctum', 'verified']);
+//inicio route
+Route::controller(InicioController::class)
+    ->middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])
+    ->group(function () {
+        Route::get('inicio', 'index')->name('inicio.index');
+    });
 
+//categorías route
+Route::controller(CategoriaController::class)
+    ->middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])
+    ->group(function () {
+        Route::get('categorias', 'index')->name('categorias.index');
+        Route::put('categorias/{categoria}', 'update')->name('categorias.update');
+        Route::post('categorias', 'store')->name('categorias.store');
+        Route::delete('categorias/{categoria}', 'destroy')->name('categorias.destroy');
+    });
 
-//Categorias
-Route::resource('categorias', CategoriaController::class)
-    ->middleware(['auth:sanctum', 'verified']);
 //proveedores
-Route::resource('proveedores', ProveedoresController::class)
-    ->middleware(['auth:sanctum', 'verified']);
+Route::controller(ProveedoresController::class)
+    ->middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])
+    ->group(function () {
+        Route::get('proveedores', 'index')->name('proveedores.index');
+        Route::get('proveedores/create', 'create')->name('proveedores.create');
+        Route::get('proveedores/{proveedor}/edit', 'edit')->name('proveedores.edit');
+        Route::get('proveedores/{proveedor}', 'destroy')->name('proveedores.destroy');
+    });
+
+
+//proveedores
+/* Route::resource('proveedores', ProveedoresController::class)
+    ->middleware(['auth:sanctum', 'verified']); */
+
+
 //Productos
 Route::resource('productos', ProductosController::class)
     ->middleware(['auth:sanctum', 'verified']);
